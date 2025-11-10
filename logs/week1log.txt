@@ -1,0 +1,33 @@
+CAP6415 Project - Week 1 Log
+Project Title: Fine-Tuning Compact CNNs for Robust Image Recognition on Corrupted Data
+Date: November 10, 2025
+
+Summary:
+During Week 1, I initiated the setup for my CAP6415 course project. The objective of this project is to improve the robustness of compact convolutional neural networks (CNNs) against image corruptions such as blur, noise, and contrast degradation by using fine-tuning techniques.
+
+Tasks Completed:
+1. Created public GitHub repository named "CAP6415_F25_project-FineTuningRobustCNN".
+2. Emailed the repository URL to vadzic@fau.edu.
+3. Defined the scope of the project and selected the following datasets and models:
+   - Dataset: CIFAR-10 for clean images, CIFAR-10-C for corrupted test images.
+   - Model: EfficientNet-B0 and MobileNetV3-Small (pretrained on ImageNet).
+4. Set up local development environment with Python 3.10, PyTorch 2.1, Torchvision, and Albumentations.
+5. Created initial project structure:
+   /src
+   /data
+   /results
+   /logs
+   /notebooks
+   README.md
+   requirements.txt
+6. Conducted preliminary tests to ensure CIFAR-10 dataset loading and pretrained model inference.
+7. Collected baseline accuracy of pretrained model on clean CIFAR-10 test set (no fine-tuning yet).
+
+Next Steps (Week 2 Goals):
+- Implement data loading and corruption evaluation pipeline.
+- Record model performance drop on CIFAR-10-C (different corruption types).
+- Log initial results in /results/baseline_metrics.csv.
+- Begin drafting the README abstract and figure samples for project introduction.
+
+Reflection:
+Week 1 focused primarily on planning, environment setup, and baseline testing. The foundation is now ready for structured experimentation and reproducibility testing in the coming weeks.
