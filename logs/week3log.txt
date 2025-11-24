@@ -1,0 +1,69 @@
+CAP6415 Project - Week 3 Log
+Project Title: Fine-Tuning Compact CNNs for Robust Image Recognition on Corrupted Data
+Week ending: November 24, 2025
+
+Summary:
+This week I implemented and ran a fine-tuning pipeline in Colab that adapts a pretrained EfficientNet-B0 to a mixture of clean CIFAR-10 training data and selected CIFAR-10-C corruptions. The run produced a finetuned checkpoint, per-corruption metrics across severities 1-5, and comparison plots with baseline.
+
+Configuration (selected):
+- Model: EfficientNet-B0 (pretrained, adapted head)
+- Training corruptions: defocus_blur, motion_blur, zoom_blur, gaussian_noise, impulse_noise
+- Severity used for training: 3
+- Corrupted fraction: 0.5 (corrupted samples ≈ 50% of clean train size aggregated)
+- Batch size: 128
+- Epochs: 3
+- Optimizer: Adam, lr=1e-4, weight_decay=1e-5
+- Freeze fraction: 0.7 (first ~70% params frozen)
+- Device: cpu
+
+Key actions completed:
+- Built mixed training loader combining CIFAR-10 clean training set + sampled corrupted subsets (5k samples per corruption).
+- Built and adapted EfficientNet-B0; froze early layers and trained later layers + head.
+- Ran 3 training epochs and saved checkpoint.
+- Evaluated finetuned model across all corruptions and severities (1-5).
+- Produced comparison plot and CSVs.
+
+Training log (representative):
+- Training set counts: clean:50000; defocus_blur:5000; motion_blur:5000; zoom_blur:5000; gaussian_noise:5000; impulse_noise:5000
+- Trainable params: 3,073,798 / 4,020,358 (≈76.46%)
+- Epoch 1: loss 0.6432, train_acc 75.12%
+- Epoch 2: loss 0.5129, train_acc 80.04%
+- Epoch 3: loss 0.4237, train_acc 83.66%
+- Checkpoint saved: results/finetuned_model.pth
+- Training wall-time (representative): 0.6s (quick small-run in Colab environment; expect slower on CPU/varies with GPU)
+
+Evaluation results (finetuned) — selected corruptions (examples):
+- defocus_blur: sev1 76.38%, sev2 65.23%, sev3 52.80%, sev4 37.50%, sev5 23.38%
+- motion_blur: sev1 75.36%, sev2 61.61%, sev3 48.78%, sev4 30.47%, sev5 14.08%
+- zoom_blur: sev1 77.23%, sev2 67.76%, sev3 57.24%, sev4 42.66%, sev5 28.25%
+- gaussian_noise: sev1 77.85%, sev2 67.78%, sev3 56.76%, sev4 43.58%, sev5 29.19%
+- impulse_noise: sev1 78.32%, sev2 69.18%, sev3 59.46%, sev4 47.84%, sev5 34.55%
+
+Top improvements vs baseline (finetuned - baseline) — top 10:
+1. defocus_blur, sev=3 -> +3.79%
+2. motion_blur, sev=3 -> +3.52%
+3. zoom_blur, sev=3 -> +3.49%
+4. gaussian_noise, sev=3 -> +3.33%
+5. impulse_noise, sev=3 -> +3.29%
+6. impulse_noise, sev=2 -> +2.41%
+7. zoom_blur, sev=2 -> +2.29%
+8. motion_blur, sev=2 -> +2.23%
+9. impulse_noise, sev=4 -> +2.22%
+10. gaussian_noise, sev=4 -> +2.10%
+
+Files generated (in Colab workspace):
+- results/baseline_metrics.csv        (representative baseline CSV created if missing)
+- results/finetuned_metrics.csv      (per-corruption, per-severity accuracies for finetuned model)
+- results/finetuned_model.pth        (saved weights)
+- results/plots/baseline_vs_finetuned.png
+
+Observations & next steps (Week 4 plan):
+- Fine-tuning on a mixed clean+corrupted dataset improved mid-severity (sev=3) performance by ~3-4% for targeted corruptions — promising but modest.
+- Highest-severity corruptions still show large drops; consider targeted data augmentation or more aggressive fine-tuning (longer training, unfreeze more layers).
+- Week 4 plan:
+  - Run ablation: vary corrupted_fraction (0.25,0.5,0.75), freeze_fraction (0.5,0.7,0.9), and lr schedule.
+  - Try training on severity mix (train using severities 2-4) to improve generalization across severities.
+  - Produce consolidated plots and short screencast demo of fine-tuning results.
+
+
+
