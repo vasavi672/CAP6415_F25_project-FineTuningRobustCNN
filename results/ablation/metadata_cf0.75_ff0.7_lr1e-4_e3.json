@@ -1,0 +1,10 @@
+{
+  "tag": "cf0.75_ff0.7_lr1e-4_e3",
+  "corrupted_fraction": 0.75,
+  "freeze_fraction": 0.7,
+  "lr": 0.0001,
+  "epochs": 3,
+  "training_severity_strategy": "single-3",
+  "metrics_csv": "results/ablation/metrics_cf0.75_ff0.7_lr1e-4_e3.csv",
+  "created_seconds": 0
+}
