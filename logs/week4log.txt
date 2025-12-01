@@ -1,0 +1,95 @@
+CAP6415 Project - Week 4 Log
+Project Title: Fine-Tuning Compact CNNs for Robust Image Recognition on Corrupted Data
+Week ending: December 01, 2025
+
+------------------------------------------------------------
+Overview
+------------------------------------------------------------
+Week 4 focused on ablation studies to determine how various fine-tuning strategies influence model robustness to image corruptions.
+After establishing baselines (Week 2) and initial fine-tuning (Week 3), this week explored multiple controlled configurations to quantify:
+  - Impact of corrupted-data ratio in fine-tuning.
+  - Effect of freezing different proportions of backbone layers.
+  - Optimal balance between learning rate, training duration, and model plasticity.
+
+All experiments used EfficientNet-B0 pretrained on ImageNet and adapted for CIFAR-10-C. Each run trained for 3 epochs on mixed clean + corrupted CIFAR-10 images, then evaluated across all 15 corruption types and 5 severity levels.
+
+------------------------------------------------------------
+Ablation Configuration Matrix
+------------------------------------------------------------
+| Tag                     | Corrupted Fraction | Freeze Fraction | Learning Rate | Epochs | Strategy   |
+|--------------------------|-------------------:|----------------:|---------------:|--------:|-------------|
+| cf0.25_ff0.7_lr1e-4_e3  | 0.25              | 0.7             | 1e-4           | 3       | single-3    |
+| cf0.5_ff0.7_lr1e-4_e3   | 0.50              | 0.7             | 1e-4           | 3       | single-3    |
+| cf0.75_ff0.7_lr1e-4_e3  | 0.75              | 0.7             | 1e-4           | 3       | single-3    |
+| cf0.5_ff0.5_lr1e-4_e3   | 0.50              | 0.5             | 1e-4           | 3       | single-3    |
+| cf0.5_ff0.9_lr1e-4_e3   | 0.50              | 0.9             | 1e-4           | 3       | single-3    |
+
+Each experiment produced metrics_<tag>.csv, metadata_<tag>.json, finetuned_model_<tag>.pth, and plots under results/ablation/.
+
+------------------------------------------------------------
+System & Dataset Notes
+------------------------------------------------------------
+• Device  : CPU (Colab runtime)
+• Dataset : CIFAR-10-C (60K images × 15 corruptions × 5 severities)
+• Baseline : EfficientNet-B0 (ImageNet pretrained)
+• Optimizer: Adam, lr=1e-4, batch size=128
+• Blend  : Mix of clean and corrupted data
+• Evaluation: top-1 accuracy per corruption × severity
+
+------------------------------------------------------------
+Results Summary
+------------------------------------------------------------
+| Tag                    | mean_top1_all | mean_top1_sev3 |
+|-------------------------|---------------|----------------|
+| cf0.25_ff0.7_lr1e-4_e3 | 58.6038       | 59.3637        |
+| cf0.5_ff0.7_lr1e-4_e3  | 58.7252       | 59.5689        |
+| cf0.75_ff0.7_lr1e-4_e3 | 58.8346       | 59.7478        |
+| cf0.5_ff0.5_lr1e-4_e3  | **58.8512**   | **59.7900**    |
+| cf0.5_ff0.9_lr1e-4_e3  | 58.5325       | 59.2210        |
+
+Best configuration: cf0.5_ff0.5_lr1e-4_e3 (50% corrupted data, 50% frozen backbone).
+
+------------------------------------------------------------
+Top 10 Improvements (vs Baseline)
+------------------------------------------------------------
+motion_blur sev3: +4.70%
+impulse_noise sev3: +4.38%
+defocus_blur sev3: +4.23%
+zoom_blur sev3: +4.09%
+gaussian_noise sev3: +4.02%
+defocus_blur sev2: +2.87%
+gaussian_noise sev4: +2.83%
+motion_blur sev4: +2.64%
+gaussian_noise sev2: +2.57%
+motion_blur sev2: +2.56%
+
+------------------------------------------------------------
+Observations
+------------------------------------------------------------
+- 50% corrupted data + 50% frozen backbone produced most consistent improvements.
+- Too much freezing (0.9) limited learning; less freezing (0.5) allowed better adaptation.
+- Gains were strongest on mid-level corruptions (severity 2–4).
+- Average boost of 3–4% over Week-3 baseline.
+
+------------------------------------------------------------
+Artifacts Generated
+------------------------------------------------------------
+- results/ablation/metrics_*.csv
+- results/ablation/metadata_*.json
+- results/ablation/finetuned_model_*.pth
+- results/ablation/summary_table.csv
+- results/ablation/plots/baseline_vs_best_cf0.5_ff0.5_lr1e-4_e3.png
+
+------------------------------------------------------------
+Conclusions
+------------------------------------------------------------
+Fine-tuning compact CNNs with partial freezing effectively improves robustness to real-world corruptions while maintaining efficiency. 
+The study confirms that lightweight adaptation (3 epochs) can yield meaningful robustness gains without full retraining.
+
+------------------------------------------------------------
+Next Steps (Week 5)
+------------------------------------------------------------
+- Train best config longer (5–10 epochs) to verify consistency.
+- Generate combined comparison plots across severities.
+- Record final 10–15 min video demo showing training, evaluation, and results.
+
