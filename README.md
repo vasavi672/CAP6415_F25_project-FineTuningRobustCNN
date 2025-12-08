@@ -43,13 +43,11 @@ Both models are compact, well-suited for resource-constrained environments, and 
 CAP6415_F25_project-FineTuningRobustCNN/
 │
 ├── src/                # Model training and evaluation scripts
-├── data/               # CIFAR-10 and CIFAR-10-C datasets
 ├── results/            # Plots, metrics, and qualitative results
 ├── logs/               # Weekly progress logs
 ├── notebooks/          # Experiments and visualization notebooks
 ├── README.md           # Project summary and documentation
-├── requirements.txt    # Dependencies and environment setup
-└── Documentation.md    # Installation and reproducibility details
+└── Documentation.pdf    # Installation and reproducibility details
 ```
 
 ## Dependencies
